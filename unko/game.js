@@ -230,8 +230,8 @@ const H = 700;
 const PLATE_Y = H - 50;
 const PLATE_WIDTH = 140;
 const PAN_Y = 80;
-const UNKO_RX = 40;
-const UNKO_RY = 35;
+const UNKO_RX = 35;
+const UNKO_RY = 30;
 const DROP_COOLDOWN = 400;
 
 // --- Difficulty Settings ---------------------------------------------
@@ -601,31 +601,17 @@ function createUnko(x, y, scale) {
   const diff = DIFFICULTY[currentDifficulty];
   const rx = UNKO_RX * scale;
   const ry = UNKO_RY * scale;
-  // Unko shape: wider at bottom, narrower at top - use trapezoid-ish vertices
-  const hw = rx;      // half width at base
-  const hh = ry;      // half height
-  const topW = hw * 0.35; // narrow top
-  const verts = [
-    { x: -hw, y: hh },
-    { x: -hw * 0.85, y: hh * 0.2 },
-    { x: -hw * 0.5, y: -hh * 0.4 },
-    { x: -topW, y: -hh * 0.8 },
-    { x: 0, y: -hh },
-    { x: topW, y: -hh * 0.8 },
-    { x: hw * 0.5, y: -hh * 0.4 },
-    { x: hw * 0.85, y: hh * 0.2 },
-    { x: hw, y: hh },
-  ];
-  const body = Bodies.fromVertices(x, y, verts, {
-    chamfer: { radius: 4 },
+  // Wide flat rectangle for stable stacking (visual is round unko shape)
+  const body = Bodies.rectangle(x, y, rx * 2, ry * 1.2, {
+    chamfer: { radius: Math.min(ry * 0.3, 5) },
     restitution: 0,
     friction: diff.friction,
     frictionStatic: diff.frictionStatic,
-    density: 0.004,
+    density: 0.003,
     frictionAir: 0.05,
     render: { visible: false },
     collisionFilter: { group: 0, category: 0x0001, mask: 0xFFFF }
-  }, true);
+  });
   body.frictionAir = 0.05;
   body.unkoRX = rx;
   body.unkoRY = ry;
