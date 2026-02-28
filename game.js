@@ -12,6 +12,7 @@ let audioCtx = null;
 
 function ensureAudio() {
   if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
 function playDrop() {
